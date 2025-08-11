@@ -3,7 +3,7 @@ import json
 import pika
 import django
 import ssl
-from transformers import AutoTokenizer, AutoModelForCausalLM
+# from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "inference_service.settings")
@@ -12,32 +12,32 @@ django.setup()
 from predictions.models import PredictionJob
 
 # ---- Load model (runs once at start) ----
-model_name = "google/gemma-3-1b-it"
-# or use: model_name = "facebook/opt-iml-max-1.3b"
-token = "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"
+# model_name = "google/gemma-3-1b-it"
+# # or use: model_name = "facebook/opt-iml-max-1.3b"
+# token = "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"
 
-# Load tokenizer and model with authentication if token is set
-tokenizer = AutoTokenizer.from_pretrained(model_name, token=token if token else None)
-model = AutoModelForCausalLM.from_pretrained(model_name, token=token if token else None)
+# # Load tokenizer and model with authentication if token is set
+# tokenizer = AutoTokenizer.from_pretrained(model_name, token=token if token else None)
+# model = AutoModelForCausalLM.from_pretrained(model_name, token=token if token else None)
 
-# Move model to GPU if available
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
+# # Move model to GPU if available
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# model.to(device)
 
-def generate_answer(prompt: str) -> str:
-    # Tokenize input and move tensors to model device
-    inputs = tokenizer(prompt, return_tensors="pt").to(device)
+# def generate_answer(prompt: str) -> str:
+#     # Tokenize input and move tensors to model device
+#     inputs = tokenizer(prompt, return_tensors="pt").to(device)
 
-    # Generate output tokens with sampling and temperature
-    outputs = model.generate(
-        **inputs,
-        max_new_tokens=200,
-        do_sample=True,
-        temperature=0.7,
-        eos_token_id=tokenizer.eos_token_id,
-        pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id,
-    )
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)
+#     # Generate output tokens with sampling and temperature
+#     outputs = model.generate(
+#         **inputs,
+#         max_new_tokens=200,
+#         do_sample=True,
+#         temperature=0.7,
+#         eos_token_id=tokenizer.eos_token_id,
+#         pad_token_id=tokenizer.pad_token_id if tokenizer.pad_token_id else tokenizer.eos_token_id,
+#     )
+#     return tokenizer.decode(outputs[0], skip_special_tokens=True)
 
 # ---- RabbitMQ callback ----
 def callback(ch, method, properties, body):
@@ -56,7 +56,7 @@ def callback(ch, method, properties, body):
         return
 
     try:
-        result = generate_answer(text)
+        result = "new hardcode answer"#generate_answer(text)
         job.status = "done"
         job.result = result
         print("result found.")

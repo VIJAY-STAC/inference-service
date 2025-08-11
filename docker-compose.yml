@@ -1,4 +1,5 @@
 version: '3.9'
+
 services:
   rabbitmq:
     image: rabbitmq:3-management
@@ -13,12 +14,14 @@ services:
       retries: 12
 
   redis:
-    image: dockerhub.timeweb.cloud/redis:alpine
+    image: redis:alpine
+    container_name: redis
     ports:
       - "6379:6379"
 
   api:
     build: .
+    container_name: api
     command: >
       sh -c "
         python3 manage.py makemigrations &&
@@ -27,21 +30,30 @@ services:
       "
     volumes:
       - .:/app
+      - sqlite_data:/app/db   # Shared volume for SQLite DB
     ports:
       - "8000:8000"
     depends_on:
-      - rabbitmq
-      - redis
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   worker:
     build:
       context: .
       dockerfile: Dockerfile
-    image: inference_service_api  # Reuse same built image
+    image: inference_service_api
+    container_name: worker
     command: python3 worker.py
+    volumes:
+      - .:/app
+      - sqlite_data:/app/db   # Same volume mount as API
     depends_on:
       rabbitmq:
         condition: service_healthy
-    
-      
-    
+      redis:
+        condition: service_started
+
+volumes:
+  sqlite_data:
