@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from .models import PredictionJob
 from .serializers import PredictionJobSerializer
 import json
-import pika  # RabbitMQ client
+import pika
 from django.core.cache import cache
 import ssl
 
