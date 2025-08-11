@@ -5,8 +5,8 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - "5672:5672"   # AMQP
-      - "15672:15672" # Management UI
+      - "5672:5672"  
+      - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 5s
@@ -30,7 +30,7 @@ services:
       "
     volumes:
       - .:/app
-      - sqlite_data:/app/db   # Shared volume for SQLite DB
+      - sqlite_data:/app/db  
     ports:
       - "8000:8000"
     depends_on:
@@ -48,7 +48,7 @@ services:
     command: python3 worker.py
     volumes:
       - .:/app
-      - sqlite_data:/app/db   # Same volume mount as API
+      - sqlite_data:/app/db  
     depends_on:
       rabbitmq:
         condition: service_healthy
