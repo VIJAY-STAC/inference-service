@@ -1,0 +1,7 @@
+django
+djangorestframework
+pika
+torch
+transformers
+redis
+django-redis

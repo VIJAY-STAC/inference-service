@@ -1,0 +1,47 @@
+version: '3.9'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  redis:
+    image: dockerhub.timeweb.cloud/redis:alpine
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    command: >
+      sh -c "
+        python3 manage.py makemigrations &&
+        python3 manage.py migrate &&
+        python3 manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+      - redis
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: inference_service_api  # Reuse same built image
+    command: python3 worker.py
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    
+      
+    
