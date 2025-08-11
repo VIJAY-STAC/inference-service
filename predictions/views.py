@@ -18,12 +18,13 @@ class PredictView(APIView):
 
             # Send job to RabbitMQ queue
             try:
-                url = "amqps://ehfuciuh:UZMuO4Pdb7x2DweqtZusuAfubexEC_TS@leopard.lmq.cloudamqp.com/ehfuciuh"  # from CloudAMQP dashboard
-                params = pika.URLParameters(url)
-                # Disable certificate verification (development only!)
-                params.ssl_options = pika.SSLOptions(ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT), 'leopard.lmq.cloudamqp.com')
-                params.ssl_options.context.check_hostname = False
-                params.ssl_options.context.verify_mode = ssl.CERT_NONE
+                # url = ""  # from CloudAMQP dashboard
+                # params = pika.URLParameters(url)
+                # # Disable certificate verification (development only!)
+                # params.ssl_options = pika.SSLOptions(ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT), 'leopard.lmq.cloudamqp.com')
+                # params.ssl_options.context.check_hostname = False
+                # params.ssl_options.context.verify_mode = ssl.CERT_NONE
+                params = pika.ConnectionParameters(host="rabbitmq")
 
                 connection = pika.BlockingConnection(params)
             except Exception as e:

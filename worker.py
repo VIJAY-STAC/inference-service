@@ -73,12 +73,15 @@ def callback(ch, method, properties, body):
         
 
 
-url = "amqps://ehfuciuh:UZMuO4Pdb7x2DweqtZusuAfubexEC_TS@leopard.lmq.cloudamqp.com/ehfuciuh"  
-params = pika.URLParameters(url)
-# Disable certificate verification (development only!)
-params.ssl_options = pika.SSLOptions(ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT), 'leopard.lmq.cloudamqp.com')
-params.ssl_options.context.check_hostname = False
-params.ssl_options.context.verify_mode = ssl.CERT_NONE
+# url = ""  
+# params = pika.URLParameters(url)
+# # Disable certificate verification (development only!)
+# params.ssl_options = pika.SSLOptions(ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT), 'leopard.lmq.cloudamqp.com')
+# params.ssl_options.context.check_hostname = False
+# params.ssl_options.context.verify_mode = ssl.CERT_NONE
+
+
+params = pika.ConnectionParameters(host="rabbitmq")
 connection = pika.BlockingConnection(params)
 channel = connection.channel()
 channel.queue_declare(queue='prediction_queue', durable=True)
