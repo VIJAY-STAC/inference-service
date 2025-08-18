@@ -91,10 +91,10 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'petwell',
-#         'USER': 'postgres',
-#         'PASSWORD': 'Vijay1234##',
-#         'HOST': 'database-1.c3602m4eeprq.ap-south-1.rds.amazonaws.com',  # Docker Compose service name for the DB container
+#         'NAME': '',
+#         'USER': '',
+#         'PASSWORD': '',
+#         'HOST': '', 
 #         'PORT': '5432',
 #     }
 # }
